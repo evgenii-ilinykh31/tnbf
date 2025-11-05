@@ -1,0 +1,50 @@
+BACKUP DOCKER'S CONTAINERS
+
+Сделай исполняемым
+chmod +x /opt/tnbf/scripts/backup-all.sh
+
+Запуск одной командой
+/opt/tnbf/scripts/backup-all.sh
+
+В результате получишь:
+/opt/tnbf/backup/2025-11-02_21-45/
+├── tnbf_images.tar                 ← все docker-образы
+├── volumes/                        ← архивы всех volumes (db, certbot и т.п.)
+├── tnbf_configs.tar.gz             ← все конфиги и docker-compose
+├── docker_ps.txt                   ← список контейнеров
+├── docker_images.txt               ← список образов
+└── docker_volumes.txt              ← список volume
+
+
+
+RESTORE DOCKER CONTAINER'S
+
+Сделай исполняемым:
+chmod +x /opt/tnbf/scripts/restore-all.sh
+
+2) Как пользоваться — одна команда
+Обычное восстановление (образы + volumes, конфиги не трогаем):
+/opt/tnbf/scripts/restore-all.sh /opt/tnbf/backup/2025-11-02_21-45
+
+Полное восстановление (включая конфиги монорепы/compose/nginx/env):
+/opt/tnbf/scripts/restore-all.sh /opt/tnbf/backup/2025-11-02_21-45 --with-configs
+
+
+3) Что именно восстановится
+
+Образы: из tnbf_images.tar (все твои tnbf-образы).
+
+Данные: каждый volume из volumes/*.tar.gz (включая tnbf_db-data, tnbf_certbot-etc, т.д.).
+
+Конфиги (по флагу): каталоги compose env nginx certbot db scripts app.
+
+4) Быстрые заметки
+
+Сертификаты лежат в volume (обычно tnbf_certbot-etc) → они тоже восстановятся.
+
+Если после --with-configs поменялись nginx-файлы, выполни:
+
+docker exec tnbf_nginx nginx -t && docker exec tnbf_nginx nginx -s reload
+
+
+БД поднимется с ровно теми данными, что были в момент бэкапа
