@@ -1,15 +1,9 @@
 @import "tailwindcss";
 
+/* Тема: белый фон/чёрный текст ПОСЛЕ раскрытия */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --foreground: #0a0a0a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -19,8 +13,23 @@
   }
 }
 
+/* Критично для избавления от белой полосы на первом кадре */
+html, body {
+  min-height: 100%;
+  background: #000;   /* чёрный первый кадр, пока шторы не разошлись */
+  margin: 0;          /* убираем дефолтный отступ body */
+}
+
 body {
-  background: var(--background);
+  background: var(--background);  /* белый фон после раскрытия */
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* (опционально) Tailwind-тема */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
 }
